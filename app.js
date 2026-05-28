@@ -234,19 +234,21 @@
 
   // ---- charts ---------------------------------------------------------
 
+  // Palette mirrors design.md tokens (colors.data.* and colors.on-surface-muted).
   const palette = {
-    accent:  '#6aa9ff',
-    accent2: '#8a78ff',
-    good:    '#46c98b',
-    warn:    '#f1b454',
-    bad:     '#ef6b73',
-    grid:    'rgba(255,255,255,0.07)',
-    text:    '#cdd4f5'
+    accent:  '#e5e5e6',          // colors.primary / data.accent
+    info:    '#9ab8e0',          // data.info (neutral series)
+    good:    '#7dd3a8',          // data.good
+    warn:    '#e6b76a',          // data.warn
+    bad:     '#ff5c5c',          // data.bad / colors.error
+    grid:    'rgba(255,255,255,0.08)', // data.grid
+    text:    '#9aa0a6'           // colors.on-surface-muted
   };
 
   Chart.defaults.color = palette.text;
   Chart.defaults.borderColor = palette.grid;
-  Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  Chart.defaults.font.family = '"Inter Variable", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  Chart.defaults.font.size = 13;
 
   function destroyCharts() {
     for (const k of Object.keys(charts)) {
@@ -258,11 +260,11 @@
   function classColor(label) {
     switch (label) {
       case '2xx': return palette.good;
-      case '3xx': return palette.accent;
+      case '3xx': return palette.info;
       case '4xx': return palette.warn;
       case '5xx': return palette.bad;
-      case '1xx': return palette.accent2;
-      default:    return '#7d86b8';
+      case '1xx': return palette.accent;
+      default:    return palette.text;
     }
   }
 
@@ -276,7 +278,7 @@
         datasets: [{
           data: data.map(d => d.count),
           backgroundColor: data.map(d => classColor(d.label)),
-          borderColor: '#1b2040',
+          borderColor: '#0f1011',
           borderWidth: 2
         }]
       },
@@ -331,7 +333,7 @@
           label: 'Requests',
           data: timeline.counts,
           borderColor: palette.accent,
-          backgroundColor: 'rgba(106,169,255,0.18)',
+          backgroundColor: 'rgba(229,229,230,0.10)',
           fill: true,
           tension: 0.25,
           pointRadius: 0
@@ -353,7 +355,7 @@
   function renderTopPaths(data) {
     const ctx = document.getElementById('topPathsChart');
     if (!data.length) { drawEmpty(ctx, 'No paths'); return; }
-    charts.topPaths = horizontalBar(ctx, data, palette.accent2);
+    charts.topPaths = horizontalBar(ctx, data, palette.info);
   }
 
   function renderTopIps(data) {
@@ -462,18 +464,22 @@
   }
 
   function sizeFor(canvas, h) {
+    // If a .chart-tall wrapper is providing the height, leave it alone.
+    if (canvas.parentElement && canvas.parentElement.classList.contains('chart-tall')) return;
     canvas.style.height = h + 'px';
   }
 
   function drawEmpty(canvas, msg) {
     const ctx = canvas.getContext('2d');
-    canvas.width = canvas.clientWidth || 400;
-    canvas.height = 160;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const w = canvas.clientWidth || 400;
+    const h = canvas.clientHeight || 160;
+    canvas.width = w;
+    canvas.height = h;
+    ctx.clearRect(0, 0, w, h);
     ctx.fillStyle = palette.text;
-    ctx.font = '14px -apple-system, "Segoe UI", Roboto, sans-serif';
+    ctx.font = '14px "Inter Variable", "Inter", -apple-system, "Segoe UI", Roboto, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(msg, canvas.width / 2, canvas.height / 2);
+    ctx.fillText(msg, w / 2, h / 2);
   }
 
   // ---- tables / lists --------------------------------------------------

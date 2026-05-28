@@ -40,11 +40,11 @@
       <div class="grid-2">
         <div class="card">
           <h3>Status code classes</h3>
-          <canvas id="statusClassChart"></canvas>
+          <div class="chart-tall"><canvas id="statusClassChart"></canvas></div>
         </div>
         <div class="card">
           <h3>HTTP methods</h3>
-          <canvas id="methodChart"></canvas>
+          <div class="chart-tall"><canvas id="methodChart"></canvas></div>
         </div>
       </div>
 
@@ -68,12 +68,12 @@
       <div class="grid-2">
         <div class="card">
           <h3>Response time distribution</h3>
-          <canvas id="responseTimeChart"></canvas>
+          <div class="chart-tall"><canvas id="responseTimeChart"></canvas></div>
           <p id="responseTimeNote" class="muted"></p>
         </div>
         <div class="card">
           <h3>Status code detail</h3>
-          <canvas id="statusCodeChart"></canvas>
+          <div class="chart-tall"><canvas id="statusCodeChart"></canvas></div>
         </div>
       </div>
 
@@ -118,7 +118,7 @@
       </div>
 
       <div class="card actions">
-        <button id="resetBtn" type="button">Analyze another file</button>
+        <button id="resetBtn" class="secondary" type="button">Analyze another file</button>
         <button id="downloadBtn" type="button">Download JSON report</button>
       </div>
     </section>
