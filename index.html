@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Log Analyzer</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>Log Analyzer</h1>
+    <p class="tagline">Drop a server log file. Get a tolerant, useful report.</p>
+  </header>
+
+  <main>
+    <section id="intake" class="card intake">
+      <div id="dropzone" class="dropzone" tabindex="0">
+        <input type="file" id="fileInput" accept=".log,.txt,text/*,application/octet-stream" />
+        <div class="dropzone-content">
+          <div class="dropzone-icon">📄</div>
+          <p><strong>Choose a log file</strong> or drop it here</p>
+          <p class="hint">Plain text logs. Common, Combined, ISO-timestamped, and similar formats are recognized. Unknown lines are surfaced, never silently dropped.</p>
+        </div>
+      </div>
+      <div id="fileMeta" class="file-meta hidden"></div>
+    </section>
+
+    <section id="progress" class="card hidden">
+      <p id="progressText">Reading…</p>
+      <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+    </section>
+
+    <section id="report" class="report hidden">
+      <div class="card summary">
+        <h2>Summary</h2>
+        <div id="summaryGrid" class="summary-grid"></div>
+        <div id="anomalyBanner" class="anomaly-banner hidden"></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Status code classes</h3>
+          <canvas id="statusClassChart"></canvas>
+        </div>
+        <div class="card">
+          <h3>HTTP methods</h3>
+          <canvas id="methodChart"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Requests over time</h3>
+        <div class="chart-tall"><canvas id="timelineChart"></canvas></div>
+        <p id="timelineNote" class="muted"></p>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Top paths</h3>
+          <div class="chart-tall"><canvas id="topPathsChart"></canvas></div>
+        </div>
+        <div class="card">
+          <h3>Top client IPs</h3>
+          <div class="chart-tall"><canvas id="topIpsChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Response time distribution</h3>
+          <canvas id="responseTimeChart"></canvas>
+          <p id="responseTimeNote" class="muted"></p>
+        </div>
+        <div class="card">
+          <h3>Status code detail</h3>
+          <canvas id="statusCodeChart"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Slowest endpoints (avg response time)</h3>
+        <div class="table-wrap">
+          <table id="slowTable">
+            <thead>
+              <tr><th>Path</th><th>Requests</th><th>Avg (ms)</th><th>p95 (ms)</th><th>Max (ms)</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p id="slowNote" class="muted"></p>
+      </div>
+
+      <div class="card">
+        <h3>Top error endpoints (4xx / 5xx)</h3>
+        <div class="table-wrap">
+          <table id="errorTable">
+            <thead>
+              <tr><th>Path</th><th>Errors</th><th>Top status</th><th>Sample IP</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Detected log formats</h3>
+        <div id="formatBreakdown" class="format-breakdown"></div>
+        <p class="muted">If multiple formats appear, your logging config likely changed at some point. Both have been parsed.</p>
+      </div>
+
+      <div class="card">
+        <h3>Skipped &amp; anomalous lines</h3>
+        <p id="skippedSummary" class="muted"></p>
+        <details id="skippedDetails">
+          <summary>Show samples</summary>
+          <ol id="skippedList" class="skipped-list"></ol>
+        </details>
+      </div>
+
+      <div class="card actions">
+        <button id="resetBtn" type="button">Analyze another file</button>
+        <button id="downloadBtn" type="button">Download JSON report</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <span>Runs entirely in your browser. No data leaves your machine.</span>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="parser.js"></script>
+  <script src="analyzer.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
